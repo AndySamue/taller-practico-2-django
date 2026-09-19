@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+{{ pokemon.name }}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid text-center">
+    <h1 class="text-capitalize">{{ pokemon.name }}</h1>
+    <div class="row justify-content-evenly">
+        <div class="col-4">
+            <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}" class="img-fluid"/>
+        </div>
+        <div class="col-4">
+            <p>
+                {% for type in pokemon.types.all %}
+                    <span class="badge bg-secondary">{{ type.name }}</span>
+                {% endfor %}
+            </p>
+            <h5>Altura: {{ pokemon.height }}</h5>
+            <h5>Peso: {{ pokemon.weight }}</h5>
+            <h5>Experiencia base: {{ pokemon.base_experience }}</h5>
+            <a href="{% url 'pokemon_list' %}" class="btn btn-primary" role="button">Volver a la Lista</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
