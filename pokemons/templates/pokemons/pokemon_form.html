@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load bootstrap5 %}
+{% load django_bootstrap5 %}
 
 {% block title %} 
 
@@ -9,7 +9,7 @@
         {% else %}
         Crear
         {% endif %}
-        Producto
+        Pokemon
 {% endblock %}
 
 {% block content %}
@@ -21,16 +21,13 @@
         {% else %}
         Crear
         {% endif %}
-        Productos
+        Pokemon
     </h1>
     <form method="POST" class="form">
         {% csrf_token %}
-        <!-- {{ form.as_p }} -->
         {% bootstrap_form form %}
-        {% buttons %}
         <button type="submit" class="btn btn-success">Guardar</button>
-         <a href="{% url 'product_list' %}" class="btn btn-primary" role="button">Cancelar</a>
-         {% endbuttons %}
+        <a href="{% url 'pokemon_list' %}" class="btn btn-primary" role="button">Cancelar</a>
     </form>
 
 </div>
