@@ -9,6 +9,10 @@ from .forms import PokemonForm
 POKEMONS_PER_PAGE = 12
 
 
+def home(request):
+    return render(request, "pokemons/home.html", {"total_pokemons": Pokemon.objects.count()})
+
+
 def pokemon_list(request):
     pokemon_qs = Pokemon.objects.all().order_by("name")
     paginator = Paginator(pokemon_qs, POKEMONS_PER_PAGE)

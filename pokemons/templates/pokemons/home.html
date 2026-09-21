@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Pokedex {% endblock %}
+
+{% block content %}
+
+<div class="home-hero">
+    <div class="home-hero-screen">
+        <img src="{% static 'pokemons/images/Pokeball.webp' %}" alt="Pokebola" class="home-hero-pokeball">
+        <p class="home-hero-eyebrow">Taller practico 2 &middot; Calidad de software</p>
+        <h1 class="home-hero-title">Pokedex</h1>
+        <p class="home-hero-subtitle">
+            Explora la Pokedex y descubre los tipos, habilidades y estadisticas
+            base de cada Pokemon.
+        </p>
+        <a href="{% url 'pokemon_list' %}" class="btn-pokedex">Ver Pokedex</a>
+    </div>
+</div>
+
+{% endblock %}

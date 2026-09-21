@@ -4,7 +4,10 @@ from .models import Pokemon
 class PokemonForm(forms.ModelForm):
     class Meta:
         model = Pokemon
-        fields = "__all__"
+        fields = ["name", "height", "weight", "base_experience", "types"]
+        widgets = {
+            "types": forms.CheckboxSelectMultiple,
+        }
 
     def clean_height(self):
         height = self.cleaned_data.get("height")

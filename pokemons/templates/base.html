@@ -5,18 +5,34 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %} Pokedex {% endblock %}</title>
+        <link rel="icon" type="image/webp" href="{% static 'pokemons/images/Pokeball.webp' %}">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
         <link href="{% static 'pokemons/css/style.css' %}" rel="stylesheet">
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light pokedex-navbar mb-4">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'pokemon_list' %}">Pokedex</a>
+                <a class="navbar-brand d-flex align-items-center gap-2" href="{% url 'home' %}">
+                    <span class="pokedex-lens"></span>
+                    <span>Pokedex</span>
+                    <span class="pokedex-led pokedex-led-yellow"></span>
+                    <span class="pokedex-led pokedex-led-green"></span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegacion">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto align-items-lg-center">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'home' %}">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'pokemon_list' %}">Pokedex</a>
+                        </li>
                         {% if user.is_authenticated %}
                             <li class="nav-item">
                                 <span class="nav-link">Hola, {{ user.username }}</span>

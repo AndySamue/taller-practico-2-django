@@ -40,7 +40,45 @@
         </div>
     </div>
 
-    <div class="pokemon-detail-body">
+    {% if pokemon.abilities %}
+        <div class="pokemon-detail-body mt-4">
+            <h5 class="pokemon-detail-section-title">Habilidades</h5>
+            <div class="pokemon-ability-list">
+                {% for ability in pokemon.abilities %}
+                    <span class="pokemon-ability-badge">
+                        {{ ability.name|capfirst }}
+                        {% if ability.is_hidden %}<em>(oculta)</em>{% endif %}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% with stats=pokemon|pokemon_stats %}
+        {% if stats %}
+            <div class="pokemon-detail-body mt-4">
+                <h5 class="pokemon-detail-section-title">Estadisticas base</h5>
+                <div class="pokemon-stat-list">
+                    {% for stat in stats %}
+                        <div class="pokemon-stat-row">
+                            <span class="pokemon-stat-name">{{ stat.label }}</span>
+                            <div class="pokemon-stat-track">
+                                <div class="pokemon-stat-fill" style="width: {{ stat.pct }}%; background-color: {{ stat.color }};"></div>
+                            </div>
+                            <span class="pokemon-stat-value">{{ stat.value }}</span>
+                        </div>
+                    {% endfor %}
+                    <div class="pokemon-stat-row pokemon-stat-total">
+                        <span class="pokemon-stat-name">Total</span>
+                        <div class="pokemon-stat-track"></div>
+                        <span class="pokemon-stat-value">{{ pokemon|pokemon_stats_total }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="pokemon-detail-body mt-4">
         <div class="pokemon-detail-actions">
             <a href="{% url 'pokemon_list' %}" class="btn-pokedex-outline">&larr; Volver a la Lista</a>
             {% if user.is_authenticated %}

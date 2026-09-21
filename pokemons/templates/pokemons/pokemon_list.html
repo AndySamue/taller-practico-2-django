@@ -9,25 +9,31 @@
             <a href="{% url 'pokemon_create' %}" class="btn-pokedex">Agregar Pokemon</a>
         </div>
     {% endif %}
-    <div class="d-flex flex-wrap justify-content-center gap-4">
+    <div class="pokemon-grid">
         {% for pokemon in page_obj %}
-            <div class="pokemon-card">
+            <div class="pokemon-card" style="border-top-color: {{ pokemon.types.first.name|default:'normal'|type_color }};">
                 <span class="pokemon-card-number">#{{ pokemon.id|dex_number }}</span>
+                {% if user.is_authenticated %}
+                    <div class="pokemon-card-icon-actions">
+                        <a href="{% url 'pokemon_update' pokemon.id %}" class="pokemon-icon-btn pokemon-icon-btn-edit" title="Editar" aria-label="Editar {{ pokemon.name }}">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <a href="{% url 'pokemon_delete' pokemon.id %}" class="pokemon-icon-btn pokemon-icon-btn-delete" title="Eliminar" aria-label="Eliminar {{ pokemon.name }}">
+                            <i class="bi bi-trash-fill"></i>
+                        </a>
+                    </div>
+                {% endif %}
                 <div class="pokemon-card-image-wrap">
                     <img src="{{ pokemon.image }}" class="img-fluid" alt="{{ pokemon.name }}">
                 </div>
                 <h5 class="pokemon-card-name">{{ pokemon.name }}</h5>
-                <p class="card-text">
+                <p class="pokemon-card-types">
                     {% for type in pokemon.types.all %}
                         <span class="badge-type badge-type-{{ type.name|lower }}">{{ type.name|type_icon }} {{ type.name|type_label }}</span>
                     {% endfor %}
                 </p>
                 <div class="pokemon-card-actions">
                     <a href="{% url 'pokemon_detail' pokemon.id %}" class="btn-pokedex">Ver Detalles</a>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'pokemon_update' pokemon.id %}" class="btn-pokedex-outline">Editar</a>
-                        <a href="{% url 'pokemon_delete' pokemon.id %}" class="btn-pokedex-outline">Eliminar</a>
-                    {% endif %}
                 </div>
             </div>
         {% empty %}
