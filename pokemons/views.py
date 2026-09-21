@@ -1,24 +1,29 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_POST
 
 from .models import Pokemon
 from .forms import PokemonForm
 
-# Vistas públicas
+POKEMONS_PER_PAGE = 12
+
+
+def home(request):
+    return render(request, "pokemons/home.html", {"total_pokemons": Pokemon.objects.count()})
+
 
 def pokemon_list(request):
-    pokemons = Pokemon.objects.all()
-    return render(request, "pokemons/pokemon_list.html", {"pokemons": pokemons})
+    pokemon_qs = Pokemon.objects.all().order_by("name")
+    paginator = Paginator(pokemon_qs, POKEMONS_PER_PAGE)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    return render(request, "pokemons/pokemon_list.html", {"page_obj": page_obj})
 
 
-def pokemon_detail(request, id):  # Cambiado a 'id' para coincidir con la URL
+def pokemon_detail(request, id):
     pokemon = get_object_or_404(Pokemon, id=id)
     return render(request, "pokemons/pokemon_detail.html", {"pokemon": pokemon})
 
-
-# Vistas protegidas (Fase 2)
 
 @login_required
 def pokemon_create(request):
@@ -30,12 +35,12 @@ def pokemon_create(request):
             return redirect("pokemon_list")
     else:
         form = PokemonForm()
-    
+
     return render(request, "pokemons/pokemon_form.html", {"form": form})
 
 
 @login_required
-def pokemon_update(request, id):  # Cambiado a 'id'
+def pokemon_update(request, id):
     pokemon = get_object_or_404(Pokemon, id=id)
     if request.method == "POST":
         form = PokemonForm(request.POST, instance=pokemon)
@@ -45,15 +50,16 @@ def pokemon_update(request, id):  # Cambiado a 'id'
             return redirect("pokemon_list")
     else:
         form = PokemonForm(instance=pokemon)
-    
+
     return render(request, "pokemons/pokemon_form.html", {"form": form})
 
 
 @login_required
-@require_POST
-def pokemon_delete(request, id):  # Cambiado a 'id'
+def pokemon_delete(request, id):
     pokemon = get_object_or_404(Pokemon, id=id)
-    nombre = pokemon.name
-    pokemon.delete()
-    messages.success(request, f"¡Pokémon '{nombre}' eliminado con éxito!")
-    return redirect("pokemon_list")
+    if request.method == "POST":
+        nombre = pokemon.name
+        pokemon.delete()
+        messages.success(request, f"¡Pokémon '{nombre}' eliminado con éxito!")
+        return redirect("pokemon_list")
+    return render(request, "pokemons/pokemon_confirm_delete.html", {"pokemon": pokemon})

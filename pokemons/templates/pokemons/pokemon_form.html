@@ -14,22 +14,33 @@
 
 {% block content %}
 
-<div class="container-fluid text-center">
-    <h1>
-        {% if form.instance.pk %}
-        Editar
-        {% else %}
-        Crear
-        {% endif %}
-        Pokemon
-    </h1>
-    <form method="POST" class="form">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        <button type="submit" class="btn btn-success">Guardar</button>
-        <a href="{% url 'pokemon_list' %}" class="btn btn-primary" role="button">Cancelar</a>
-    </form>
-
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+        <div class="pokedex-card">
+            <h1 class="h3 mb-4">
+                {% if form.instance.pk %}
+                Editar
+                {% else %}
+                Crear
+                {% endif %}
+                Pokemon
+            </h1>
+            <form method="POST" class="form text-start">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">{% bootstrap_field form.name %}</div>
+                    <div class="col-md-6">{% bootstrap_field form.height %}</div>
+                    <div class="col-md-6">{% bootstrap_field form.weight %}</div>
+                    <div class="col-md-6">{% bootstrap_field form.base_experience %}</div>
+                    <div class="col-12">{% bootstrap_field form.types %}</div>
+                </div>
+                <div class="d-flex justify-content-center gap-2 flex-wrap mt-4">
+                    <button type="submit" class="btn-pokedex">Guardar</button>
+                    <a href="{% url 'pokemon_list' %}" class="btn-pokedex-outline" role="button">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

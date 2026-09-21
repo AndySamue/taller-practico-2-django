@@ -32,12 +32,25 @@ def load_pokemons(limit=20):
         if not detail:
             continue
 
+        stats = {s["stat"]["name"]: s["base_stat"] for s in detail.get("stats", [])}
+        abilities = [
+            {"name": a["ability"]["name"], "is_hidden": a["is_hidden"]}
+            for a in detail.get("abilities", [])
+        ]
+
         pokemon = Pokemon.objects.create(
             name=detail["name"],
             image=detail["sprites"]["front_default"] or "",
             height=detail["height"],
             weight=detail["weight"],
             base_experience=detail.get("base_experience"),
+            abilities=abilities,
+            hp=stats.get("hp"),
+            attack=stats.get("attack"),
+            defense=stats.get("defense"),
+            special_attack=stats.get("special-attack"),
+            special_defense=stats.get("special-defense"),
+            speed=stats.get("speed"),
         )
         for entry_type in detail["types"]:
             pokemon_type, _ = PokemonType.objects.get_or_create(name=entry_type["type"]["name"])

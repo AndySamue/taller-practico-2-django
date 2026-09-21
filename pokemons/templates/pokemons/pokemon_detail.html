@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load pokemon_extras %}
 
 {% block title %}
 
@@ -8,24 +9,85 @@
 
 {% block content %}
 
-<div class="container-fluid text-center">
-    <h1 class="text-capitalize">{{ pokemon.name }}</h1>
-    <div class="row justify-content-evenly">
-        <div class="col-4">
-            <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}" class="img-fluid"/>
+{% with primary_type=pokemon.types.first.name %}
+<div class="pokemon-detail-page">
+    <div class="pokemon-detail-header" style="background: linear-gradient(135deg, {{ primary_type|type_soft_color }} 0%, #ffffff 75%);">
+        <div class="pokemon-detail-avatar">
+            <img src="{{ pokemon.image }}" alt="{{ pokemon.name }}">
         </div>
-        <div class="col-4">
-            <p>
+        <div class="pokemon-detail-info">
+            <p class="pokemon-detail-id">#{{ pokemon.id|dex_number }}</p>
+            <h1 class="pokemon-detail-name">{{ pokemon.name }}</h1>
+            <div class="pokemon-type-list">
                 {% for type in pokemon.types.all %}
-                    <span class="badge bg-secondary">{{ type.name }}</span>
+                    <span class="badge-type badge-type-{{ type.name|lower }}">{{ type.name|type_icon }} {{ type.name|type_label }}</span>
                 {% endfor %}
-            </p>
-            <h5>Altura: {{ pokemon.height }}</h5>
-            <h5>Peso: {{ pokemon.weight }}</h5>
-            <h5>Experiencia base: {{ pokemon.base_experience }}</h5>
-            <a href="{% url 'pokemon_list' %}" class="btn btn-primary" role="button">Volver a la Lista</a>
+            </div>
+            <div class="pokemon-quickstats">
+                <div class="pokemon-quickstat">
+                    <span class="pokemon-quickstat-label">Altura</span>
+                    <span class="pokemon-quickstat-value">{{ pokemon.height }}</span>
+                </div>
+                <div class="pokemon-quickstat">
+                    <span class="pokemon-quickstat-label">Peso</span>
+                    <span class="pokemon-quickstat-value">{{ pokemon.weight }}</span>
+                </div>
+                <div class="pokemon-quickstat">
+                    <span class="pokemon-quickstat-label">Exp. base</span>
+                    <span class="pokemon-quickstat-value">{{ pokemon.base_experience }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if pokemon.abilities %}
+        <div class="pokemon-detail-body mt-4">
+            <h5 class="pokemon-detail-section-title">Habilidades</h5>
+            <div class="pokemon-ability-list">
+                {% for ability in pokemon.abilities %}
+                    <span class="pokemon-ability-badge">
+                        {{ ability.name|capfirst }}
+                        {% if ability.is_hidden %}<em>(oculta)</em>{% endif %}
+                    </span>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% with stats=pokemon|pokemon_stats %}
+        {% if stats %}
+            <div class="pokemon-detail-body mt-4">
+                <h5 class="pokemon-detail-section-title">Estadisticas base</h5>
+                <div class="pokemon-stat-list">
+                    {% for stat in stats %}
+                        <div class="pokemon-stat-row">
+                            <span class="pokemon-stat-name">{{ stat.label }}</span>
+                            <div class="pokemon-stat-track">
+                                <div class="pokemon-stat-fill" style="width: {{ stat.pct }}%; background-color: {{ stat.color }};"></div>
+                            </div>
+                            <span class="pokemon-stat-value">{{ stat.value }}</span>
+                        </div>
+                    {% endfor %}
+                    <div class="pokemon-stat-row pokemon-stat-total">
+                        <span class="pokemon-stat-name">Total</span>
+                        <div class="pokemon-stat-track"></div>
+                        <span class="pokemon-stat-value">{{ pokemon|pokemon_stats_total }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="pokemon-detail-body mt-4">
+        <div class="pokemon-detail-actions">
+            <a href="{% url 'pokemon_list' %}" class="btn-pokedex-outline">&larr; Volver a la Lista</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'pokemon_update' pokemon.id %}" class="btn-pokedex">Editar</a>
+                <a href="{% url 'pokemon_delete' pokemon.id %}" class="btn-pokedex-outline">Eliminar</a>
+            {% endif %}
         </div>
     </div>
 </div>
+{% endwith %}
 
 {% endblock %}
