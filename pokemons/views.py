@@ -1,10 +1,15 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Pokemon
 from .forms import PokemonForm
 
+POKEMONS_PER_PAGE = 12
+
 def pokemon_list(request):
-    pokemons = Pokemon.objects.all()
-    return render(request, "pokemons/pokemon_list.html", {"pokemons": pokemons})
+    pokemon_qs = Pokemon.objects.all().order_by("name")
+    paginator = Paginator(pokemon_qs, POKEMONS_PER_PAGE)
+    page_obj = paginator.get_page(request.GET.get("page"))
+    return render(request, "pokemons/pokemon_list.html", {"page_obj": page_obj})
 
 def pokemon_detail(request, id):
     pokemon = get_object_or_404(Pokemon, id=id)
@@ -35,5 +40,7 @@ def pokemon_update(request, id):
 
 def pokemon_delete(request, id):
     pokemon = get_object_or_404(Pokemon, id=id)
-    pokemon.delete()
-    return redirect("pokemon_list")
+    if request.method == "POST":
+        pokemon.delete()
+        return redirect("pokemon_list")
+    return render(request, "pokemons/pokemon_confirm_delete.html", {"pokemon": pokemon})
